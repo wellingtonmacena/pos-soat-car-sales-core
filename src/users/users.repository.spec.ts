@@ -53,7 +53,7 @@ describe('UsersRepository', () => {
 
   it('creates a user', async () => {
     const dto = {
-      cpf: '12345678901',
+      cpf: '77873619052',
       cnpj: undefined,
       nome: 'Maria Silva',
       email: 'maria.silva@example.com',

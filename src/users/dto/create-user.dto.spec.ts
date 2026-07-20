@@ -4,7 +4,7 @@ describe('CreateUserDto', () => {
   it('exposes the default sample values', () => {
     const dto = new CreateUserDto();
 
-    expect(dto.cpf).toBe('12345678901');
+    expect(dto.cpf).toBe('77873619052');
     expect(dto.cnpj).toBe('12345678000199');
     expect(dto.nome).toBe('Maria Silva');
     expect(dto.email).toBe('maria.silva@example.com');

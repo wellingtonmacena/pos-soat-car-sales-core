@@ -3,13 +3,13 @@ import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateUserDto {
   @ApiPropertyOptional({
-    default: '12345678901',
-    example: '12345678901',
+    default: '77873619052',
+    example: '77873619052',
     description: 'CPF do usuário, quando aplicável (somente números)',
   })
   @IsOptional()
   @Length(11, 11)
-  cpf?: string = '12345678901';
+  cpf?: string = '77873619052';
 
   @ApiPropertyOptional({
     default: '12345678000199',

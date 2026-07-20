@@ -5,7 +5,7 @@ export class SeedInitialData1752662400002 implements MigrationInterface {
     await queryRunner.query(`
       INSERT INTO users (cpf, cnpj, nome, email, data_nascimento, created_at, updated_at)
       VALUES
-        ('12345678901', NULL, 'Maria Silva', 'maria.silva@example.com', '1995-08-15', NOW(), NOW()),
+        ('77873619052', NULL, 'Maria Silva', 'maria.silva@example.com', '1995-08-15', NOW(), NOW()),
         (NULL, '12345678000199', 'Loja Central LTDA', 'contato@lojacentral.com.br', NULL, NOW(), NOW())
     `);
 

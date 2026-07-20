@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { getAppDataSource } from './db/data-source';
 
 jest.mock('@nestjs/core', () => ({
   NestFactory: {
@@ -22,6 +23,12 @@ jest.mock('@nestjs/swagger', () => {
   };
 });
 
+jest.mock('./db/data-source', () => ({
+  getAppDataSource: jest.fn().mockResolvedValue({
+    runMigrations: jest.fn().mockResolvedValue([]),
+  }),
+}));
+
 describe('bootstrap', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -30,7 +37,9 @@ describe('bootstrap', () => {
 
   it('initializes the app, validation pipe and swagger docs', async () => {
     const listenMock = jest.fn().mockResolvedValue(undefined);
+    const getUrlMock = jest.fn().mockResolvedValue('http://localhost:4567');
     const useGlobalPipesMock = jest.fn();
+    const useGlobalInterceptorsMock = jest.fn();
     const swaggerBuilderMock = {
       setTitle: jest.fn().mockReturnThis(),
       setDescription: jest.fn().mockReturnThis(),
@@ -41,7 +50,9 @@ describe('bootstrap', () => {
 
     (NestFactory.create as jest.Mock).mockResolvedValue({
       listen: listenMock,
+      getUrl: getUrlMock,
       useGlobalPipes: useGlobalPipesMock,
+      useGlobalInterceptors: useGlobalInterceptorsMock,
     });
     (DocumentBuilder as unknown as jest.Mock).mockImplementation(
       () => swaggerBuilderMock,
@@ -52,6 +63,7 @@ describe('bootstrap', () => {
       await import('./main');
     });
 
+    expect(getAppDataSource).toHaveBeenCalledTimes(1);
     expect(NestFactory.create).toHaveBeenCalledTimes(1);
     expect((NestFactory.create as jest.Mock).mock.calls[0][0].name).toBe(
       AppModule.name,
@@ -64,9 +76,15 @@ describe('bootstrap', () => {
     expect(SwaggerModule.createDocument).toHaveBeenCalledTimes(1);
     expect(SwaggerModule.setup).toHaveBeenCalledWith(
       'api/docs',
-      { listen: listenMock, useGlobalPipes: useGlobalPipesMock },
+      {
+        listen: listenMock,
+        getUrl: getUrlMock,
+        useGlobalPipes: useGlobalPipesMock,
+        useGlobalInterceptors: useGlobalInterceptorsMock,
+      },
       {},
     );
-    expect(listenMock).toHaveBeenCalledWith('4567');
+    expect(listenMock).toHaveBeenCalledWith(4567);
+    expect(getUrlMock).toHaveBeenCalledTimes(1);
   });
 });

@@ -35,16 +35,18 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DB_NAME: car_sales_core
-      PORT: 3000
+      PORT: 3001
       # Hostname of the sibling car-sales service's container on the shared
       # car-sales-net network. Must match the service name/alias that repo
       # exposes on that same external network.
       CAR_SALES_SERVICE_URL: http://car-sales-app:3000
     ports:
-      - "3000:3000"
+      - "3001:3001"
     networks:
-      - default
-      - car-sales-net
+      default:
+      car-sales-net:
+        aliases:
+          - car-sales-core
 
 volumes:
   postgres_data02:
