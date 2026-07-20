@@ -1,5 +1,6 @@
 # Serviço Core (Usuários + Ordens de Pagamento)
 
+
 ![Coverage Lines](https://img.shields.io/badge/coverage%20lines-100%25-brightgreen)
 ![Coverage Branches](https://img.shields.io/badge/coverage%20branches-97.77%25-brightgreen)
 
