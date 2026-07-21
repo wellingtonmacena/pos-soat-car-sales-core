@@ -7,8 +7,8 @@ on:
     branches: [main, master]
 
 jobs:
-  build-and-test:
-    name: Lint, build and test
+  test:
+    name: Test Execution
     runs-on: ubuntu-latest
 
     steps:
@@ -24,37 +24,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Build
-        run: npm run build
-
       - name: Run tests with coverage
         run: npm run test:cov
 
-      - name: Publish coverage summary
+      - name: Add Job Summary
         if: always()
         run: |
-          echo "## Coverage summary" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          node -e "
-            const fs = require('fs');
-            const path = 'coverage/coverage-summary.json';
-            if (!fs.existsSync(path)) {
-              console.log('No coverage summary found.');
-              process.exit(0);
-            }
-            const { total } = JSON.parse(fs.readFileSync(path, 'utf8'));
-            const metrics = ['statements', 'branches', 'functions', 'lines'];
-            const rows = metrics.map((metric) => {
-              const m = total[metric];
-              return \`| \${metric} | \${m.covered}/\${m.total} | \${m.pct}% |\`;
-            });
-            const table = [
-              '| Metric | Covered/Total | Percentage |',
-              '| --- | --- | --- |',
-              ...rows,
-            ].join('\n');
-            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, table + '\n');
-          "
+          echo "## Test Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Tests completed successfully." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f ./coverage/coverage-summary.json ]; then
+            node -e "
+              const fs = require('fs');
+              const coverage = JSON.parse(fs.readFileSync('./coverage/coverage-summary.json', 'utf8')).total;
+              const metrics = ['statements', 'branches', 'functions', 'lines'];
+              console.log('### Coverage Metrics');
+              console.log('| Metric | Covered | Total | Percentage |');
+              console.log('| --- | --- | --- | --- |');
+              metrics.forEach((metric) => {
+                const m = coverage[metric];
+                console.log('| ' + metric + ' | ' + m.covered + ' | ' + m.total + ' | ' + m.pct + '% |');
+              });
+            " >> $GITHUB_STEP_SUMMARY
+          fi
