@@ -8,7 +8,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreatePaymentOrderDto } from './dto/create-payment_order.dto';
 import { UpdatePaymentOrderDto } from './dto/update-payment_order.dto';
 import { WebhookPaymentOrderDto } from './dto/webhook-payment_order.dto';
@@ -26,6 +26,8 @@ export class PaymentOrderController {
   }
 
   @Get()
+  @ApiQuery({ name: 'id', required: false, description: 'Payment order ID' })
+  @ApiQuery({ name: 'paymentCode', required: false, description: 'Payment order code (UUID)' })
   findAll(@Query('id') id?: string, @Query('paymentCode') paymentCode?: string) {
     if (id) {
       return this.paymentOrderService.findOne(+id);
