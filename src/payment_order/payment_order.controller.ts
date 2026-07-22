@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreatePaymentOrderDto } from './dto/create-payment_order.dto';
@@ -25,7 +26,13 @@ export class PaymentOrderController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('id') id?: string, @Query('paymentCode') paymentCode?: string) {
+    if (id) {
+      return this.paymentOrderService.findOne(+id);
+    }
+    if (paymentCode) {
+      return this.paymentOrderService.findByCode(paymentCode);
+    }
     return this.paymentOrderService.findAll();
   }
 

@@ -38,6 +38,16 @@ export class PaymentOrderService {
     return paymentOrder;
   }
 
+  async findByCode(paymentCode: string) {
+    const paymentOrder = await this.paymentOrderRepository.findByCode(paymentCode);
+
+    if (!paymentOrder) {
+      throw new NotFoundException(`Payment order with code ${paymentCode} not found`);
+    }
+
+    return paymentOrder;
+  }
+
   async update(id: number, updatePaymentOrderDto: UpdatePaymentOrderDto) {
     const paymentOrder = await this.paymentOrderRepository.update(
       id,
